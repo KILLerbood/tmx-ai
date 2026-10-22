@@ -1,6 +1,9 @@
 // Page renderers. Each one builds the <main> content for its data-page value.
 import { h, t, str, icon, content, settings, legal, getLang, safeUrl, safeImage, SERVICE_KEYS, SERVICE_PAGES } from './core.js';
 import { socialLinks } from './layout.js';
+import { JOURNEY_VIEWS, clientCard, exampleLabel } from './journey.js';
+import { SHOWCASES } from './showcase.js';
+import { portfolioStage } from './portfolio.js';
 
 const arr = (v) => (Array.isArray(v) ? v : []);
 
@@ -71,43 +74,6 @@ function services() {
       h('ul', { class: 'svc-grid' }, ...SERVICE_KEYS.map(serviceCard))));
 }
 
-const JV = {
-  de: { ask: 'Wie viel kostet das Set?', ans: '49 € inkl. MwSt. – hier bestellen →', ai: 'KI', growth: 'Wachstum' },
-  en: { ask: 'How much is the set?', ans: '€49 incl. VAT – order here →', ai: 'AI', growth: 'Growth' },
-  ru: { ask: 'Сколько стоит набор?', ans: '49 € с НДС – заказать здесь →', ai: 'ИИ', growth: 'Рост' }
-};
-
-function journeyVisual(i) {
-  const x = JV[getLang()] || JV.de;
-  const v = (cls, ...kids) => h('div', { class: 'jv jv--' + cls, 'aria-hidden': 'true' }, ...kids);
-  switch (i) {
-    case 0: return v('brief',
-      h('div', { class: 'jv-card' },
-        h('b', {}, 'Briefing · LUMA home'),
-        ...[0, 1, 2, 3].map((k) => h('span', { class: 'jv-check' }, icon('check', 14), h('i', { class: 'w' + k })))),
-      h('div', { class: 'jv-bubble' }, h('i'), h('i'), h('i')));
-    case 1: return v('brand',
-      h('div', { class: 'jv-logo' }, h('span', { class: 'jv-mark' }), 'LUMA'),
-      h('div', { class: 'jv-swatches' }, h('i'), h('i'), h('i'), h('i')),
-      h('div', { class: 'jv-type' }, h('b', {}, 'Aa'), h('span', {}, 'Space Grotesk · Inter')));
-    case 2: return v('site',
-      h('div', { class: 'jv-browser' },
-        h('div', { class: 'jv-bar' }, h('i'), h('i'), h('i')),
-        h('div', { class: 'jv-hero' }, h('span'), h('span'), h('em')),
-        h('div', { class: 'jv-grid' }, h('i'), h('i'), h('i'))));
-    case 3: return v('auto',
-      ...['mail', 'layers', 'check'].map((n) => h('span', { class: 'jv-node' }, icon(n, 20))),
-      h('span', { class: 'jv-wire' }, h('i'), h('i')));
-    case 4: return v('ai',
-      h('div', { class: 'jv-msg jv-msg--u' }, x.ask),
-      h('div', { class: 'jv-msg' }, h('small', {}, x.ai), x.ans),
-      h('div', { class: 'jv-msg jv-msg--typing' }, h('i'), h('i'), h('i')));
-    default: return v('growth',
-      h('div', { class: 'jv-bars' }, ...[18, 26, 34, 48, 62, 80, 100].map((p) => { const b = h('i'); b.style.setProperty('--h', p + '%'); return b; })),
-      h('span', { class: 'jv-badge' }, '▲ ', h('b', {}, x.growth)));
-  }
-}
-
 function journeySection() {
   const j = t('journey') || {};
   const steps = arr(j.steps);
@@ -126,7 +92,8 @@ function journeySection() {
     btns.forEach((b, k) => { b.setAttribute('aria-selected', String(k === i)); b.classList.toggle('is-done', k < i); });
     const s = steps[i];
     stage.replaceChildren(
-      journeyVisual(i),
+      h('span', { class: 'journey__ex' }, exampleLabel()),
+      h('div', { class: 'journey__visual' }, JOURNEY_VIEWS[i]()),
       h('div', { class: 'journey__copy', id: 'journey-panel', role: 'tabpanel', 'aria-labelledby': 'jt-' + i },
         h('span', { class: 'journey__tag' }, s.tag),
         h('h3', {}, s.title),
@@ -136,15 +103,18 @@ function journeySection() {
   const start = () => {
     if (userPicked || timer || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     root.classList.add('is-auto');
-    timer = setInterval(() => show((active + 1) % steps.length), 4800);
+    timer = setInterval(() => show((active + 1) % steps.length), 9000);
   };
   const root = h('section', { class: 'section journey', id: 'journey', 'data-shape': 'process' },
     h('div', { class: 'container' },
       heading({ eyebrow: j.eyebrow, title: j.title, accent: j.titleAccent }),
+      h('div', { 'data-reveal': '' }, clientCard()),
       h('div', { class: 'journey__box', 'data-reveal': '' },
         h('div', { class: 'journey__steps', role: 'tablist' }, ...btns),
         stage),
-      j.example ? h('p', { class: 'journey__example' }, j.example) : null));
+      null));
+  // Any interaction inside the showcase means the visitor is playing: stop auto-advancing.
+  ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach((ev) => stage.addEventListener(ev, () => { userPicked = true; stop(); }, { passive: true }));
   show(0);
   const io = new IntersectionObserver(([e]) => (e.isIntersecting ? start() : stop()), { threshold: 0.3 });
   io.observe(root);
@@ -167,7 +137,8 @@ function projectCard(p, i) {
   const loc = (p && p[getLang()]) || {};
   const img = safeImage(p.image);
   const url = safeUrl(p.url);
-  const cover = img
+  const live = SHOWCASES[p.demo];
+  const cover = live ? live() : img
     ? h('img', { class: 'project__img', src: img, alt: loc.title || '', loading: 'lazy', decoding: 'async', width: '1200', height: '750' })
     : h('div', { class: 'project__placeholder project__placeholder--' + (i % 3), 'aria-hidden': 'true' },
       h('span', {}, str(loc.title).slice(0, 2).toUpperCase() || 'TMX'));
@@ -246,8 +217,7 @@ function portfolioPage() {
         h('p', { class: 'eyebrow hero__eyebrow' }, t('portfolio.eyebrow')),
         h('h1', { class: 'hero__title', id: 'pf-title' }, h('span', { class: 'hero__line' }, ...splitWords(t('portfolio.title')))),
         h('p', { class: 'hero__text' }, t('portfolio.text')))),
-    h('section', { class: 'section', 'data-shape': 'portfolio' },
-      h('div', { class: 'container' }, h('ul', { class: 'projects' }, ...arr(content.projects).map(projectCard)))),
+    portfolioStage(),
     ctaBand()
   ];
 }

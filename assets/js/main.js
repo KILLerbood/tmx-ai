@@ -62,6 +62,34 @@ function sceneFor(name) {
   return table[name] || table.legal;
 }
 
+// Components can steer the backdrop directly (e.g. the portfolio wave).
+window.addEventListener('tmx:scene', (e) => { if (world && e.detail) world.morph(e.detail.shape, e.detail); });
+
+// Home hero: click / tap anywhere that is not a control and the particles
+// burst ("boom") and re-form as the next shape.
+const PLAY_SHAPES = ['globe', 'galaxy', 'dna', 'saturn', 'core'];
+const TAP_HINT = { de: '✦ Klicken – die Form verwandelt sich', en: '✦ Click – watch it transform', ru: '✦ Нажмите – форма изменится' };
+let playIndex = -1;
+document.addEventListener('click', (e) => {
+  if (page !== 'home' || !world) return;
+  const hero = e.target.closest('.hero');
+  if (!hero || e.target.closest('a, button, input, select, textarea, label')) return;
+  playIndex = (playIndex + 1) % PLAY_SHAPES.length;
+  world.burst();
+  world.morph(PLAY_SHAPES[playIndex], sceneFor('hero'));
+  hero.querySelector('.hero-tap')?.classList.add('is-used');
+});
+function addTapHint() {
+  const hero = document.querySelector('.hero');
+  if (page !== 'home' || !hero || reduced) return;
+  const lang = document.documentElement.lang || 'de';
+  const hint = document.createElement('span');
+  hint.className = 'hero-tap';
+  hint.setAttribute('aria-hidden', 'true');
+  hint.textContent = TAP_HINT[lang] || TAP_HINT.de;
+  hero.append(hint);
+}
+
 function applyScene(name) {
   if (!world) return;
   const s = sceneFor(name);
@@ -71,6 +99,7 @@ function applyScene(name) {
 /* ---------- Motion ---------- */
 
 function initMotion() {
+  addTapHint();
   const hero = document.querySelector('.hero');
   if (hero) hero.dataset.shape = page.match(/imprint|privacy|accessibility|notfound/) ? 'legal' : 'hero';
   applyScene(hero ? hero.dataset.shape : 'legal');
@@ -92,6 +121,8 @@ function initMotion() {
       y: 24, opacity: 0, duration: 0.9, ease: 'power3.out', stagger: 0.08, delay: 0.45
     });
   }
+
+  document.querySelectorAll('[data-pf-stage]').forEach((el) => el.initScroll?.(ScrollTrigger));
 
   ScrollTrigger.batch('[data-reveal]', {
     start: 'top 88%',
@@ -208,7 +239,8 @@ if (location.hash) {
   if (target) setTimeout(() => target.scrollIntoView(), 60);
 }
 (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => {
-  setTimeout(hidePreloader, reduced ? 0 : 450);
+  // Keep the intro visible long enough to be seen (~1.6s total), never longer.
+  setTimeout(hidePreloader, reduced ? 0 : Math.max(350, 1600 - performance.now()));
   setTimeout(showBanner, reduced ? 0 : 900);
   ScrollTrigger?.refresh();
 });

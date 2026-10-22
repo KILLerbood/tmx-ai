@@ -45,67 +45,89 @@ window.TMX_CONTENT = {
   "projects": [
     {
       "id": "p1",
+      "demo": "shop",
       "image": "",
       "url": "",
       "tags": [
-        "Next.js",
-        "JavaScript",
-        "Tailwind CSS"
+        "Shop",
+        "UX/UI",
+        "Payments",
+        "SEO"
       ],
       "de": {
-        "title": "Projekt des Gründers",
-        "label": "Eigenes Projekt",
-        "text": "Eine eigene Plattform – entworfen, entwickelt und betrieben von TMX."
+        "title": "STRIDE – Sneaker-Onlineshop",
+        "label": "Beispielprojekt · E-Commerce",
+        "text": "Ein schneller Shop mit Produktwelten, Warenkorb, Klarna/PayPal und Live-Bestellungen – optimiert fürs Handy."
       },
       "en": {
-        "title": "Founder's project",
-        "label": "Own project",
-        "text": "An in-house platform, designed, built and run by TMX."
+        "title": "STRIDE – sneaker online shop",
+        "label": "Sample project · e-commerce",
+        "text": "A fast shop with product worlds, cart, Klarna/PayPal and live orders – built mobile-first."
+      },
+      "ru": {
+        "title": "STRIDE – магазин кроссовок",
+        "label": "Пример проекта · e-commerce",
+        "text": "Быстрый магазин с каталогом, корзиной, Klarna/PayPal и заказами в реальном времени – mobile first."
       }
     },
     {
       "id": "p2",
+      "demo": "crm",
       "image": "",
       "url": "",
       "tags": [
-        "Web",
-        "AI"
+        "CRM",
+        "Automation",
+        "Dashboard"
       ],
       "de": {
-        "title": "Projekt 2",
-        "label": "Demnächst",
-        "text": "Details folgen in Kürze."
+        "title": "Kundenwerk – CRM nach Maß",
+        "label": "Beispielprojekt · CRM-System",
+        "text": "Anfragen, Angebote und Aufträge auf einem Board. Angebote gehen automatisch raus, der Umsatz ist immer live sichtbar."
       },
       "en": {
-        "title": "Project 2",
-        "label": "Coming soon",
-        "text": "Details coming soon."
+        "title": "Kundenwerk – custom CRM",
+        "label": "Sample project · CRM system",
+        "text": "Leads, proposals and deals on one board. Proposals go out automatically and revenue is always visible live."
+      },
+      "ru": {
+        "title": "Kundenwerk – CRM под задачи",
+        "label": "Пример проекта · CRM",
+        "text": "Заявки, предложения и сделки на одной доске. КП уходят автоматически, выручка видна в реальном времени."
       }
     },
     {
       "id": "p3",
+      "demo": "ai",
       "image": "",
       "url": "",
       "tags": [
-        "3D",
-        "Design"
+        "AI",
+        "OCR",
+        "DATEV",
+        "DSGVO"
       ],
       "de": {
-        "title": "Projekt 3",
-        "label": "Demnächst",
-        "text": "Details folgen in Kürze."
+        "title": "Lexa – KI liest Rechnungen",
+        "label": "Beispielprojekt · KI-Tool",
+        "text": "Die KI erkennt Lieferant, Beträge und Steuer in Sekunden und bucht direkt in die Buchhaltung – EU-gehostet."
       },
       "en": {
-        "title": "Project 3",
-        "label": "Coming soon",
-        "text": "Details coming soon."
+        "title": "Lexa – AI that reads invoices",
+        "label": "Sample project · AI tool",
+        "text": "The AI extracts supplier, amounts and tax in seconds and books them straight into accounting – hosted in the EU."
+      },
+      "ru": {
+        "title": "Lexa – ИИ читает счета",
+        "label": "Пример проекта · ИИ-инструмент",
+        "text": "ИИ за секунды распознаёт поставщика, суммы и налог и сразу проводит их в бухгалтерии – хостинг в ЕС."
       }
     }
   ],
   "i18n": {
     "de": {
       "nav": {
-        "home": "Start",
+        "home": "Home",
         "about": "Über TMX",
         "development": "Development",
         "ai": "AI",
@@ -439,7 +461,6 @@ window.TMX_CONTENT = {
         "eyebrow": "Von A bis Z – vom ersten Gespräch bis an die Spitze",
         "title": "Ihre Reise mit",
         "titleAccent": "TMX AI",
-        "example": "Beispielprojekt: „LUMA home“ – vom ersten Gespräch zum wachsenden Onlinehandel",
         "steps": [
           {
             "title": "Erstgespräch & Strategie",
@@ -810,7 +831,6 @@ window.TMX_CONTENT = {
         "eyebrow": "From A to Z – from the first call to the top",
         "title": "Your journey with",
         "titleAccent": "TMX AI",
-        "example": "Sample project: “LUMA home” – from the first call to a growing online business",
         "steps": [
           {
             "title": "Discovery & strategy",
@@ -1181,7 +1201,6 @@ window.TMX_CONTENT = {
         "eyebrow": "От А до Я – от первого разговора до вершины",
         "title": "Ваш путь с",
         "titleAccent": "TMX AI",
-        "example": "Пример проекта: «LUMA home» – от первого разговора до растущего онлайн-бизнеса",
         "steps": [
           {
             "title": "Знакомство и стратегия",

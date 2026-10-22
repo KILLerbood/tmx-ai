@@ -36,7 +36,7 @@ export function section({ id, eyebrow, title, text, badge }, ...children) {
           h('h2', { class: 'demo__title', id: id + '-title' }, title)),
         h('div', { class: 'demo__aside' },
           text ? h('p', { class: 'demo__text' }, text) : null,
-          badge ? h('span', { class: 'demo-badge' }, h('span', { class: 'demo-badge__dot', 'aria-hidden': 'true' }), badge) : null)),
+          null)),
       ...children));
 }
 

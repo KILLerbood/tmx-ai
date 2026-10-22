@@ -76,14 +76,14 @@ function automation() {
 
   const comments = h('div', { class: 'ig__comments' });
   const feed = h('div', { class: 'ig__view' },
-    h('div', { class: 'ig__top' }, h('span', { class: 'post__avatar' }, 'L'), h('b', {}, 'luma.home')),
-    h('div', { class: 'ig__img', 'aria-hidden': 'true' }, h('span'), h('span')),
+    h('div', { class: 'ig__top' }, h('img', { class: 'post__avatar', src: 'assets/img/photos/candle-2.jpg', alt: '' }), h('b', {}, 'luma.home')),
+    h('div', { class: 'ig__img' }, h('img', { src: 'assets/img/photos/candle.jpg', alt: '' })),
     h('div', { class: 'ig__actions', 'aria-hidden': 'true' }, '♡  💬  ↗'),
     h('p', { class: 'ig__caption' }, h('b', {}, 'luma.home '), L(T.auto.caption)),
     comments);
   const dmLog = h('div', { class: 'ig__dmlog' });
   const dm = h('div', { class: 'ig__view ig__dm' },
-    h('div', { class: 'ig__top' }, h('span', {}, '‹'), h('span', { class: 'post__avatar' }, 'L'), h('b', {}, 'luma.home')),
+    h('div', { class: 'ig__top' }, h('span', {}, '‹'), h('img', { class: 'post__avatar', src: 'assets/img/photos/candle-2.jpg', alt: '' }), h('b', {}, 'luma.home')),
     dmLog);
   const screen = h('div', { class: 'ig' }, feed, dm);
   const replay = h('button', { type: 'button', class: 'btn btn--ghost btn--sm' }, L(T.auto.replay));
@@ -280,8 +280,8 @@ function media() {
     const p = PLATFORMS[plat];
     ad.className = 'ad ad--' + ['feed', 'story', 'reel'][fmt] + ' ad--' + p.k;
     ad.replaceChildren(
-      h('div', { class: 'ad__top' }, h('span', { class: 'post__avatar' }, 'L'), h('span', {}, h('b', {}, 'luma.home'), h('small', {}, L(T.media.sponsored) + ' · ' + p.n))),
-      h('div', { class: 'ad__media', 'aria-hidden': 'true' }, h('span'), h('span'), fmt ? h('i', { class: 'ad__play' }, '▶') : null),
+      h('div', { class: 'ad__top' }, h('img', { class: 'post__avatar', src: 'assets/img/photos/candle-2.jpg', alt: '' }), h('span', {}, h('b', {}, 'luma.home'), h('small', {}, L(T.media.sponsored) + ' · ' + p.n))),
+      h('div', { class: 'ad__media' }, h('img', { src: fmt ? 'assets/img/photos/candle-story.jpg' : 'assets/img/photos/candle-3.jpg', alt: '' }), fmt ? h('i', { class: 'ad__play' }, '▶') : null),
       h('p', { class: 'ad__text' }, L(T.media.adText)),
       h('span', { class: 'ad__cta' }, L(T.media.cta), icon('arrow', 14)));
   }

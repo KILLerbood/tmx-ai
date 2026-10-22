@@ -1,13 +1,14 @@
 // Development page: 3D design carousel, app mock, a working mini shop,
 // a live dashboard and a support-chat system. Everything runs in the browser.
+import { MINI_SITES } from './minisites.js';
 import { h, icon, L, section, browser, phone, onVisible, ticker, money, num, countTo, svg, smoothPath, chatLog, norm, sleep, reduced } from './kit.js';
 
 const T = {
   demo: { de: 'Live-Demo · läuft lokal im Browser', en: 'Live demo · runs locally in your browser', ru: 'Живое демо · работает в браузере' },
   design: {
     eyebrow: { de: 'Webdesign in 3D', en: 'Web design in 3D', ru: 'Веб-дизайн в 3D' },
-    title: { de: 'Fünf Branchen. Fünf Handschriften.', en: 'Five industries. Five signatures.', ru: 'Пять отраслей. Пять почерков.' },
-    text: { de: 'Ziehen, klicken oder wischen Sie: Jede Website bekommt ein eigenes Design-System – Farben, Typografie und Layout passend zur Marke.', en: 'Drag, click or swipe: every website gets its own design system – colours, type and layout tailored to the brand.', ru: 'Тяните, нажимайте или листайте: у каждого сайта своя дизайн-система – цвета, шрифты и сетка под бренд.' },
+    title: { de: 'Fünf Marken. Fünf Websites zum Ausprobieren.', en: 'Five brands. Five websites to try.', ru: 'Пять брендов. Пять сайтов, которые можно попробовать.' },
+    text: { de: 'Drehen Sie das Karussell und probieren Sie jede Website direkt aus: scrollen, filtern, Größe wählen, in den Warenkorb legen oder einen Tisch reservieren.', en: 'Spin the carousel and try each website right here: scroll, filter, pick a size, add to cart or book a table.', ru: 'Поверните карусель и попробуйте каждый сайт прямо здесь: прокрутка, фильтры, размер, корзина или бронь стола.' },
     prev: { de: 'Vorheriges Design', en: 'Previous design', ru: 'Предыдущий дизайн' },
     next: { de: 'Nächstes Design', en: 'Next design', ru: 'Следующий дизайн' }
   },
@@ -93,33 +94,14 @@ const T = {
 
 /* ---------------- 1. 3D design carousel ---------------- */
 
-const SITES = [
-  { key: 'bistro', name: 'Bistro Aurora', tag: { de: 'Restaurant', en: 'Restaurant', ru: 'Ресторан' }, title: { de: 'Saisonal. Regional. Unvergesslich.', en: 'Seasonal. Local. Unforgettable.', ru: 'Сезонно. Локально. Незабываемо.' }, cta: { de: 'Tisch reservieren', en: 'Book a table', ru: 'Забронировать' } },
-  { key: 'nordwerk', name: 'NORDWERK', tag: { de: 'Architektur', en: 'Architecture', ru: 'Архитектура' }, title: { de: 'Räume, die bleiben.', en: 'Spaces that last.', ru: 'Пространства, которые остаются.' }, cta: { de: 'Projekte ansehen', en: 'View projects', ru: 'Проекты' } },
-  { key: 'pulse', name: 'PULSE', tag: { de: 'Fitness', en: 'Fitness', ru: 'Фитнес' }, title: { de: 'Stärker. Jeden Tag.', en: 'Stronger. Every day.', ru: 'Сильнее. Каждый день.' }, cta: { de: 'Probetraining', en: 'Free trial', ru: 'Пробное занятие' } },
-  { key: 'lumen', name: 'Lumen Skin', tag: { de: 'Kosmetik-Shop', en: 'Beauty shop', ru: 'Косметика' }, title: { de: 'Klare Haut. Klare Inhaltsstoffe.', en: 'Clear skin. Clear ingredients.', ru: 'Чистая кожа. Честный состав.' }, cta: { de: 'Jetzt shoppen', en: 'Shop now', ru: 'В магазин' } },
-  { key: 'vectra', name: 'Vectra', tag: { de: 'SaaS-Plattform', en: 'SaaS platform', ru: 'SaaS-платформа' }, title: { de: 'Daten, die entscheiden.', en: 'Data that decides.', ru: 'Данные, которые решают.' }, cta: { de: 'Kostenlos testen', en: 'Start free', ru: 'Попробовать' } }
-];
-
-function siteMock(s) {
-  return h('div', { class: 'mock mock--' + s.key, 'aria-hidden': 'true' },
-    h('div', { class: 'mock__nav' }, h('b', {}, s.name), h('span', { class: 'mock__links' }, h('i'), h('i'), h('i')), h('span', { class: 'mock__pill' })),
-    h('div', { class: 'mock__hero' },
-      h('div', { class: 'mock__copy' },
-        h('span', { class: 'mock__kicker' }, L(s.tag)),
-        h('span', { class: 'mock__h' }, L(s.title)),
-        h('span', { class: 'mock__lines' }, h('i'), h('i')),
-        h('span', { class: 'mock__btn' }, L(s.cta))),
-      h('div', { class: 'mock__art' }, h('span'), h('span'), h('span'))),
-    h('div', { class: 'mock__cards' }, h('span'), h('span'), h('span')));
-}
-
 function designCarousel() {
+  const SITES = MINI_SITES;
   const n = SITES.length;
   let index = 0, drag = null, auto = null;
   const ring = h('div', { class: 'carousel__ring' });
   const panels = SITES.map((s, i) => {
-    const p = h('figure', { class: 'carousel__panel', 'data-i': String(i) }, siteMock(s));
+    const p = h('figure', { class: 'carousel__panel', 'data-i': String(i) }, s.build());
+    p.addEventListener('click', () => { if (!p.classList.contains('is-active')) { stopAuto(); let d = i - (((index % n) + n) % n); if (d > n / 2) d -= n; if (d < -n / 2) d += n; go(index + d); } });
     ring.append(p);
     return p;
   });
@@ -135,7 +117,7 @@ function designCarousel() {
 
   function layout() {
     const w = stage.clientWidth;
-    const pw = Math.min(560, w * 0.72);
+    const pw = Math.min(600, w * (w < 700 ? 0.86 : 0.62));
     const radius = Math.round((pw / 2) / Math.tan(Math.PI / n)) + 40;
     stage.style.setProperty('--pw', pw + 'px');
     stage.style.setProperty('--radius', radius + 'px');
@@ -149,6 +131,7 @@ function designCarousel() {
     [...dots.children].forEach((d, i) => d.setAttribute('aria-current', i === active ? 'true' : 'false'));
     const s = SITES[active];
     caption.textContent = s.name + ' — ' + L(s.tag);
+    panels.forEach((p, i) => { p.inert = i !== active; });
   }
   function go(i) { index = i; render(); }
   prev.addEventListener('click', () => { index--; render(); });
@@ -157,7 +140,14 @@ function designCarousel() {
     if (e.key === 'ArrowLeft') { index--; render(); }
     if (e.key === 'ArrowRight') { index++; render(); }
   });
-  stage.addEventListener('pointerdown', (e) => { drag = { x: e.clientX, moved: 0 }; stage.setPointerCapture(e.pointerId); ring.classList.add('is-drag'); });
+  const stopAuto = () => { clearInterval(auto); auto = null; userTook = true; };
+  let userTook = false;
+  stage.addEventListener('pointerdown', (e) => {
+    stopAuto();
+    // Inside the front website the visitor scrolls and clicks – only drag from the outside.
+    if (e.target.closest('.carousel__panel.is-active')) return;
+    drag = { x: e.clientX, moved: 0 }; stage.setPointerCapture(e.pointerId); ring.classList.add('is-drag');
+  });
   stage.addEventListener('pointermove', (e) => {
     if (!drag) return;
     drag.moved = e.clientX - drag.x;
@@ -170,11 +160,12 @@ function designCarousel() {
   };
   stage.addEventListener('pointerup', end);
   stage.addEventListener('pointercancel', end);
-  stage.addEventListener('pointerenter', () => { clearInterval(auto); auto = null; });
+  stage.addEventListener('pointerenter', stopAuto);
+  stage.addEventListener('wheel', stopAuto, { passive: true });
 
   window.addEventListener('resize', layout);
   requestAnimationFrame(layout);
-  if (!reduced) onVisible(stage, () => { auto ||= setInterval(() => { index++; render(); }, 3800); }, () => { clearInterval(auto); auto = null; });
+  if (!reduced) onVisible(stage, () => { if (!userTook) auto ||= setInterval(() => { index++; render(); }, 4200); }, () => { clearInterval(auto); auto = null; });
 
   return section({ id: 'demo-design', eyebrow: L(T.design.eyebrow), title: L(T.design.title), text: L(T.design.text), badge: L(T.demo) },
     h('div', { class: 'carousel-wrap', 'data-reveal': '' },
@@ -185,44 +176,98 @@ function designCarousel() {
 
 /* ---------------- 2. App mock ---------------- */
 
-function appSection() {
-  const screens = h('div', { class: 'app__screens', tabindex: '0', 'aria-label': L(T.app.eyebrow) },
-    h('div', { class: 'app__screen app__screen--login' },
-      h('div', { class: 'app__logo' }, 'studio', h('b', {}, '.')),
-      h('p', { class: 'app__big' }, L({ de: 'Willkommen zurück', en: 'Welcome back', ru: 'С возвращением' })),
-      h('span', { class: 'app__input' }, 'anna@mail.de'),
-      h('span', { class: 'app__input' }, '••••••••'),
-      h('span', { class: 'app__btn' }, L({ de: 'Anmelden', en: 'Sign in', ru: 'Войти' })),
-      h('span', { class: 'app__hint' }, 'Face ID')),
-    h('div', { class: 'app__screen' },
-      h('p', { class: 'app__small' }, L({ de: 'Hallo Anna', en: 'Hi Anna', ru: 'Привет, Анна' })),
-      h('p', { class: 'app__big' }, L({ de: 'Deine Woche', en: 'Your week', ru: 'Твоя неделя' })),
-      h('div', { class: 'app__ring' }, h('span', {}, '4/5')),
-      ...['Yoga Flow', 'HIIT 30', 'Pilates'].map((n, i) => h('div', { class: 'app__row' }, h('i', { class: 'c' + i }), h('span', {}, n), h('small', {}, ['08:00', '18:30', '19:15'][i])))),
-    h('div', { class: 'app__screen' },
-      h('p', { class: 'app__small' }, L({ de: 'Termin buchen', en: 'Book a session', ru: 'Записаться' })),
-      h('p', { class: 'app__big' }, 'Pilates'),
-      h('div', { class: 'app__days' }, ...['Mo', 'Di', 'Mi', 'Do', 'Fr'].map((d, i) => h('span', { class: i === 2 ? 'on' : '' }, d))),
-      h('div', { class: 'app__slots' }, ...['09:00', '12:30', '17:00', '19:15'].map((d, i) => h('span', { class: i === 3 ? 'on' : '' }, d))),
-      h('span', { class: 'app__btn' }, L({ de: 'Jetzt buchen', en: 'Book now', ru: 'Записаться' }))));
-  const pager = h('div', { class: 'app__pager', 'aria-hidden': 'true' }, h('i', { class: 'on' }), h('i'), h('i'));
-  screens.addEventListener('scroll', () => {
-    const i = Math.round(screens.scrollLeft / screens.clientWidth);
-    [...pager.children].forEach((d, k) => d.classList.toggle('on', k === i));
-  }, { passive: true });
-  let auto;
-  if (!reduced) onVisible(screens, () => {
-    auto = setInterval(() => {
-      const i = Math.round(screens.scrollLeft / screens.clientWidth);
-      screens.scrollTo({ left: ((i + 1) % 3) * screens.clientWidth, behavior: 'smooth' });
-    }, 3200);
-  }, () => clearInterval(auto));
-  screens.addEventListener('pointerdown', () => clearInterval(auto), { once: true });
+const APP_STEPS = {
+  de: [
+    ['Idee & Ziel', 'Wir klären gemeinsam: Wer nutzt die App, welches Problem löst sie, was muss sie am ersten Tag können? Beispiel: Ein Yogastudio will, dass Kunden Kurse selbst buchen.'],
+    ['Wireframe', 'Aus der Idee wird ein klickbarer Grundriss – ohne Farben. So sehen Sie früh, wie die Abläufe funktionieren, und wir ändern noch ohne Kosten.'],
+    ['Design', 'Ihre Marke kommt dazu: Farben, Schriften, Bilder und Icons. Jeder Screen wird pixelgenau gestaltet – für iPhone und Android.'],
+    ['Entwicklung', 'Jetzt wird es echt: Login, Buchung, Bezahlung und Push-Nachrichten. Probieren Sie es aus – tippen Sie im Handy auf einen Termin.'],
+    ['Launch & Betreuung', 'Wir veröffentlichen die App im App Store und bei Google Play, messen die Nutzung und entwickeln sie mit Ihnen weiter.']
+  ],
+  en: [
+    ['Idea & goal', 'Together we clarify: who uses the app, what problem it solves, what it must do on day one. Example: a yoga studio wants customers to book classes themselves.'],
+    ['Wireframe', 'The idea becomes a clickable blueprint – no colours yet. You see the flows early and changes cost nothing.'],
+    ['Design', 'Your brand comes in: colours, type, imagery and icons. Every screen is designed pixel-perfect – for iPhone and Android.'],
+    ['Development', 'Now it gets real: login, booking, payment and push notifications. Try it – tap a time slot on the phone.'],
+    ['Launch & care', 'We publish the app on the App Store and Google Play, measure usage and keep improving it with you.']
+  ],
+  ru: [
+    ['Идея и цель', 'Вместе определяем: кто пользуется приложением, какую проблему оно решает и что должно уметь с первого дня. Пример: йога-студия хочет, чтобы клиенты сами записывались на занятия.'],
+    ['Прототип', 'Идея превращается в кликабельный каркас – пока без цветов. Вы рано видите сценарии, а изменения ничего не стоят.'],
+    ['Дизайн', 'Добавляем ваш бренд: цвета, шрифты, фото и иконки. Каждый экран прорабатывается до пикселя – для iPhone и Android.'],
+    ['Разработка', 'Теперь всё по-настоящему: вход, запись, оплата и push-уведомления. Попробуйте – нажмите на время на телефоне.'],
+    ['Запуск и поддержка', 'Публикуем приложение в App Store и Google Play, измеряем использование и развиваем его вместе с вами.']
+  ]
+};
 
-  return section({ id: 'demo-app', eyebrow: L(T.app.eyebrow), title: L(T.app.title), text: L(T.app.text) },
-    h('div', { class: 'app-grid' },
-      h('div', { class: 'app-phone', 'data-reveal': '', 'data-tilt': '' }, phone(screens, pager)),
-      h('ul', { class: 'check-list', 'data-reveal': '' }, ...L(T.app.points).map((p) => h('li', {}, icon('check', 18), p)))));
+function appSection() {
+  const steps = L(APP_STEPS);
+  let cur = 0;
+  const screen = h('div', { class: 'appx__screen' });
+  const t = (o) => L(o);
+  const views = [
+    () => h('div', { class: 'appx appx--idea' },
+      h('p', { class: 'appx__label' }, t({ de: 'Workshop · Notizen', en: 'Workshop · notes', ru: 'Воркшоп · заметки' })),
+      ...[{ de: 'Kunden buchen Kurse selbst', en: 'Customers book classes themselves', ru: 'Клиенты сами записываются' }, { de: 'Weniger Telefon & WhatsApp', en: 'Fewer calls & WhatsApps', ru: 'Меньше звонков и WhatsApp' }, { de: 'Erinnerung 2 h vorher', en: 'Reminder 2 h before', ru: 'Напоминание за 2 часа' }, { de: '10er-Karte online kaufen', en: 'Buy a 10-class pass online', ru: 'Абонемент на 10 занятий онлайн' }]
+        .map((n, i) => h('span', { class: 'appx__note appx__note--' + i }, t(n)))),
+    () => h('div', { class: 'appx appx--wire' }, h('i', { class: 'w-h' }), h('i', { class: 'w-img' }), h('i', { class: 'w-row' }), h('i', { class: 'w-row' }), h('i', { class: 'w-row' }), h('i', { class: 'w-btn' })),
+    () => h('div', { class: 'appx appx--design' },
+      h('div', { class: 'appx__top' }, h('b', {}, 'studio', h('em', {}, '.')), h('img', { src: 'assets/img/photos/avatar-2.jpg', alt: '' })),
+      h('p', { class: 'appx__hi' }, t({ de: 'Hallo Anna 👋', en: 'Hi Anna 👋', ru: 'Привет, Анна 👋' })),
+      h('div', { class: 'appx__card' }, h('small', {}, t({ de: 'Nächster Kurs', en: 'Next class', ru: 'Следующее занятие' })), h('b', {}, 'Yoga Flow'), h('span', {}, t({ de: 'Heute · 18:30 · Raum 2', en: 'Today · 6:30 pm · Room 2', ru: 'Сегодня · 18:30 · Зал 2' }))),
+      ...['Pilates', 'HIIT 30', 'Yin Yoga'].map((n, i) => h('div', { class: 'appx__row' }, h('i', { class: 'c' + i }), h('span', {}, n), h('small', {}, ['08:00', '12:15', '19:45'][i])))),
+    () => {
+      const ok = h('div', { class: 'appx__ok' });
+      const slots = h('div', { class: 'appx__slots' }, ...['09:00', '12:30', '17:00', '19:15'].map((x) => {
+        const b = h('button', { type: 'button' }, x);
+        b.addEventListener('click', () => {
+          [...slots.children].forEach((y) => y.classList.toggle('on', y === b));
+          ok.textContent = '✓ ' + t({ de: 'Gebucht: Pilates, Mi ', en: 'Booked: Pilates, Wed ', ru: 'Запись: пилатес, ср ' }) + x;
+          ok.classList.remove('is-in'); void ok.offsetWidth; ok.classList.add('is-in');
+        });
+        return b;
+      }));
+      return h('div', { class: 'appx appx--dev' },
+        h('p', { class: 'appx__label' }, t({ de: 'Termin buchen', en: 'Book a session', ru: 'Записаться' })),
+        h('p', { class: 'appx__big' }, 'Pilates'),
+        h('div', { class: 'appx__days' }, ...['Mo', 'Di', 'Mi', 'Do', 'Fr'].map((d, i) => h('span', { class: i === 2 ? 'on' : '' }, d))),
+        slots, h('p', { class: 'appx__tip' }, '👆 ' + t({ de: 'Tippen Sie auf eine Uhrzeit', en: 'Tap a time', ru: 'Нажмите на время' })), ok);
+    },
+    () => h('div', { class: 'appx appx--launch' },
+      h('div', { class: 'appx__push' }, h('b', {}, 'studio.'), h('span', {}, t({ de: 'Dein Kurs startet in 2 Stunden 🧘', en: 'Your class starts in 2 hours 🧘', ru: 'Занятие начнётся через 2 часа 🧘' }))),
+      h('div', { class: 'appx__store' },
+        h('span', { class: 'appx__icon' }, 'studio', h('em', {}, '.')),
+        h('div', {}, h('b', {}, 'studio. – Yoga & Pilates'), h('small', {}, 'Health & Fitness'), h('span', { class: 'appx__stars' }, '★★★★★ 4,9')),
+        h('span', { class: 'appx__get' }, t({ de: 'Laden', en: 'Get', ru: 'Загрузить' }))),
+      h('div', { class: 'appx__stats' }, ...[['1.240', { de: 'Downloads', en: 'Downloads', ru: 'Загрузки' }], ['-70 %', { de: 'Anrufe', en: 'Calls', ru: 'Звонков' }], ['+38 %', { de: 'Buchungen', en: 'Bookings', ru: 'Записей' }]].map(([v, l]) => h('div', {}, h('b', {}, v), h('small', {}, t(l))))),
+      h('p', { class: 'appx__label' }, t({ de: 'Beispielwerte', en: 'Sample figures', ru: 'Примерные данные' })))
+  ];
+  const list = h('ol', { class: 'appx-steps' });
+  const title = h('h3', { class: 'appx-copy__title' }), text = h('p', { class: 'appx-copy__text' });
+  const prev = h('button', { type: 'button', class: 'btn btn--ghost btn--sm' }, '← ' + t({ de: 'Zurück', en: 'Back', ru: 'Назад' }));
+  const next = h('button', { type: 'button', class: 'btn btn--primary btn--sm' });
+  const items = steps.map(([n], i) => {
+    const b = h('button', { type: 'button', class: 'appx-step' }, h('span', {}, String(i + 1)), n);
+    b.addEventListener('click', () => show(i));
+    list.append(h('li', {}, b));
+    return b;
+  });
+  function show(i) {
+    cur = i;
+    items.forEach((b, k) => { b.setAttribute('aria-current', String(k === i)); b.classList.toggle('is-done', k < i); });
+    screen.replaceChildren(views[i]());
+    title.textContent = (i + 1) + '. ' + steps[i][0];
+    text.textContent = steps[i][1];
+    prev.disabled = i === 0;
+    next.textContent = i === steps.length - 1 ? t({ de: 'Von vorn', en: 'Start over', ru: 'Сначала' }) + ' ↺' : t({ de: 'Nächster Schritt', en: 'Next step', ru: 'Следующий шаг' }) + ' →';
+  }
+  prev.addEventListener('click', () => show(Math.max(0, cur - 1)));
+  next.addEventListener('click', () => show(cur === steps.length - 1 ? 0 : cur + 1));
+  show(0);
+  return section({ id: 'demo-app', eyebrow: L(T.app.eyebrow), title: t({ de: 'Ihre App – Schritt für Schritt.', en: 'Your app – step by step.', ru: 'Ваше приложение – шаг за шагом.' }), text: t({ de: 'Gehen Sie den Weg einer echten App mit: vom ersten Gespräch bis in den App Store. Klicken Sie sich durch die fünf Schritte.', en: 'Walk the path of a real app: from the first conversation to the App Store. Click through the five steps.', ru: 'Пройдите путь настоящего приложения: от первого разговора до App Store. Пролистайте пять шагов.' }) },
+    h('div', { class: 'appx-grid', 'data-reveal': '' },
+      h('div', { class: 'app-phone' }, phone(screen)),
+      h('div', { class: 'appx-copy' }, list, h('div', { class: 'appx-copy__panel', 'aria-live': 'polite' }, title, text), h('div', { class: 'appx-copy__nav' }, prev, next))));
 }
 
 /* ---------------- 3. Mini shop ---------------- */
@@ -236,17 +281,9 @@ const PRODUCTS = [
   { id: 6, cat: 'light', price: 24, name: { de: 'Kerze „Ember“', en: 'Candle “Ember”', ru: 'Свеча «Ember»' }, art: 'candle' }
 ];
 
+const PHOTO = { vase: 'home-vase.jpg', lamp: 'home-lamp.jpg', chair: 'home-blanket.jpg', mug: 'home-mug.jpg', plant: 'home-plant.jpg', candle: 'candle-3.jpg' };
 function productArt(kind) {
-  const s = svg('svg', { viewBox: '0 0 120 120', 'aria-hidden': 'true', class: 'shop__art-svg' });
-  const add = (tag, a) => s.append(svg(tag, a));
-  add('ellipse', { cx: 60, cy: 104, rx: 34, ry: 5, fill: 'rgba(0,0,0,.18)' });
-  if (kind === 'vase') { add('path', { d: 'M48 26h24l-4 14c14 8 18 22 14 38-3 14-12 24-22 24s-19-10-22-24c-4-16 0-30 14-38z', fill: '#c9a27e' }); add('path', { d: 'M44 64h32', stroke: '#a7805e', 'stroke-width': 3 }); }
-  if (kind === 'lamp') { add('path', { d: 'M36 50 L60 18 L84 50 Z', fill: '#f5d77a' }); add('rect', { x: 58, y: 50, width: 4, height: 46, fill: '#3a3550' }); add('rect', { x: 44, y: 96, width: 32, height: 6, rx: 3, fill: '#3a3550' }); add('circle', { cx: 60, cy: 56, r: 10, fill: 'rgba(255,220,120,.35)' }); }
-  if (kind === 'chair') { add('rect', { x: 32, y: 30, width: 56, height: 44, rx: 14, fill: '#7c6cf0' }); add('rect', { x: 26, y: 62, width: 68, height: 22, rx: 10, fill: '#6a5ae0' }); add('rect', { x: 34, y: 84, width: 5, height: 18, fill: '#2b2640' }); add('rect', { x: 81, y: 84, width: 5, height: 18, fill: '#2b2640' }); }
-  if (kind === 'mug') { add('rect', { x: 34, y: 42, width: 44, height: 54, rx: 10, fill: '#e8e2d6' }); add('path', { d: 'M78 54c14 0 14 26 0 26', stroke: '#e8e2d6', 'stroke-width': 7, fill: 'none' }); add('path', { d: 'M48 26c0 6 6 6 6 12M60 22c0 6 6 6 6 12', stroke: '#b9b0c9', 'stroke-width': 3, fill: 'none', 'stroke-linecap': 'round' }); }
-  if (kind === 'plant') { add('path', { d: 'M42 72h36l-5 30H47z', fill: '#d9805f' }); add('path', { d: 'M60 72C50 50 34 46 30 30c14 2 26 14 30 30 4-16 16-28 30-30-4 16-20 20-30 42z', fill: '#4caf7a' }); }
-  if (kind === 'candle') { add('rect', { x: 44, y: 48, width: 32, height: 52, rx: 6, fill: '#f1e6d2' }); add('path', { d: 'M60 22c8 10 8 18 0 22-8-4-8-12 0-22z', fill: '#ffb547' }); add('rect', { x: 59, y: 40, width: 2, height: 9, fill: '#3a3550' }); }
-  return s;
+  return h('img', { class: 'shop__photo', src: 'assets/img/photos/' + PHOTO[kind], alt: '', loading: 'lazy', decoding: 'async' });
 }
 
 function miniShop() {
@@ -344,7 +381,7 @@ function miniShop() {
           h('p', { class: 'shop__hero-title' }, L(T.shop.hero)),
           h('p', { class: 'shop__hero-sub' }, L(T.shop.heroSub)),
           h('span', { class: 'shop__hero-btn' }, L(T.shop.shopNow))),
-        h('div', { class: 'shop__hero-art' }, productArt('lamp'))),
+        h('div', { class: 'shop__hero-art' }, h('img', { class: 'shop__photo', src: 'assets/img/photos/home-hero.jpg', alt: '' }))),
       chips,
       grid,
       h('div', { class: 'shop__usp' },

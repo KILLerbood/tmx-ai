@@ -299,8 +299,8 @@ function postGenerator() {
     n++;
     const body = h('p', { class: 'post__text' });
     out.replaceChildren(
-      h('div', { class: 'post__head' }, h('span', { class: 'post__avatar' }, 'L'), h('b', {}, 'luma.home'), h('small', {}, channel.value), h('span', { class: 'ai-tag' }, L(T.tools.aiLabel))),
-      h('div', { class: 'post__img', 'aria-hidden': 'true' }, h('span')),
+      h('div', { class: 'post__head' }, h('img', { class: 'post__avatar', src: 'assets/img/photos/candle-2.jpg', alt: '' }), h('b', {}, 'luma.home'), h('small', {}, channel.value), h('span', { class: 'ai-tag' }, L(T.tools.aiLabel))),
+      h('div', { class: 'post__img' }, h('img', { src: 'assets/img/photos/candle-2.jpg', alt: '' })),
       body);
     await typeInto(body, text, 14);
     btn.disabled = false;
@@ -681,5 +681,5 @@ function trust() {
 }
 
 export function mount(container) {
-  container.replaceChildren(notice(), assistant(), autoReply(), marketingTools(), aiCoding(), toolsGrid(), trust());
+  container.replaceChildren(assistant(), autoReply(), marketingTools(), aiCoding(), toolsGrid(), trust());
 }

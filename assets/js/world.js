@@ -3,7 +3,7 @@
 import * as THREE from '../vendor/three.module.min.js';
 
 const MORPH_SECONDS = 1.8;
-const SHAPES = ['core', 'development', 'ai', 'marketing', 'it', 'galaxy', 'ring'];
+const SHAPES = ['core', 'development', 'ai', 'marketing', 'it', 'galaxy', 'ring', 'wave', 'globe', 'dna', 'saturn'];
 
 function rand(seed) {
   let s = seed >>> 0;
@@ -94,6 +94,53 @@ function buildShape(name, n, r) {
       else x = r() < 0.5 ? -sw / 2 : sw / 2;
       set(i, x, y0 + y, z);
     }
+  } else if (name === 'globe') {
+    // Earth: dense procedural continents, faint latitude lines and a thin atmosphere.
+    const land = (la, lo) => Math.sin(3 * lo) * Math.cos(2 * la) + 0.55 * Math.sin(5 * lo + 1) * Math.sin(3 * la) + 0.4 * Math.cos(2 * lo - 4 * la) > 0.3;
+    const R = 2.15;
+    const onSphere = (la, lo, rad) => [rad * Math.cos(la) * Math.cos(lo), rad * Math.sin(la), rad * Math.cos(la) * Math.sin(lo)];
+    for (let i = 0; i < n; i++) {
+      const kind = i % 10;
+      let la, lo, rad = R;
+      if (kind < 7) {
+        do { la = Math.asin(2 * r() - 1); lo = r() * Math.PI * 2; } while (!land(la, lo));
+      } else if (kind < 9) {
+        la = (Math.round((r() * 2 - 1) * 6) / 6) * 1.3; lo = r() * Math.PI * 2;
+      } else { la = Math.asin(2 * r() - 1); lo = r() * Math.PI * 2; rad = R * (1.12 + r() * 0.05); }
+      const p = onSphere(la, lo, rad);
+      set(i, p[0], p[1], p[2]);
+    }
+  } else if (name === 'dna') {
+    // Double helix with rungs.
+    for (let i = 0; i < n; i++) {
+      const y = (r() * 2 - 1) * 3, a = y * 2.1;
+      if (i % 4 === 0) {
+        const t = r() * 2 - 1, yy = Math.round(y * 3) / 3, aa = yy * 2.1;
+        set(i, Math.cos(aa) * t, yy, Math.sin(aa) * t);
+      } else {
+        const strand = i % 2 ? 0 : Math.PI;
+        set(i, Math.cos(a + strand) * 1 + gauss() * 0.05, y, Math.sin(a + strand) * 1 + gauss() * 0.05);
+      }
+    }
+  } else if (name === 'saturn') {
+    // A planet with a tilted ring system.
+    for (let i = 0; i < n; i++) {
+      if (i % 5 < 2) {
+        const th = r() * Math.PI * 2, ph = Math.acos(2 * r() - 1), rad = 1.25;
+        set(i, rad * Math.sin(ph) * Math.cos(th), rad * Math.cos(ph), rad * Math.sin(ph) * Math.sin(th));
+      } else {
+        const th = r() * Math.PI * 2, rad = 1.8 + Math.pow(r(), 0.8) * 1.4;
+        const x = Math.cos(th) * rad, z = Math.sin(th) * rad, y = gauss() * 0.02;
+        const tilt = 0.45;
+        set(i, x, y * Math.cos(tilt) - z * Math.sin(tilt), y * Math.sin(tilt) + z * Math.cos(tilt));
+      }
+    }
+  } else if (name === 'wave') {
+    // A flowing silk ribbon, used to sweep projects in and out on the portfolio page.
+    for (let i = 0; i < n; i++) {
+      const u = r() * 2 - 1, v = r() * 2 - 1;
+      set(i, u * 4.2, Math.sin(u * 3.1 + v * 1.4) * 0.85 + v * 0.55 + gauss() * 0.03, Math.cos(u * 2.3) * 0.9 + v * 1.1);
+    }
   } else if (name === 'galaxy') {
     for (let i = 0; i < n; i++) {
       const arm = i % 3, rad = Math.pow(r(), 0.7) * 3.2;
@@ -118,6 +165,7 @@ const vertex = /* glsl */`
   uniform float uTime;
   uniform float uSize;
   uniform float uPixel;
+  uniform float uBurst;
   varying float vRand;
   varying float vDepth;
   void main() {
@@ -127,6 +175,8 @@ const vertex = /* glsl */`
     vec3 p = mix(position, aTo, k);
     float t = uTime * 0.6 + aRand * 20.0;
     p += vec3(sin(t), cos(t * 1.3), sin(t * 0.7)) * 0.025;
+    // "Boom": a click blasts every particle outwards, then it falls back into the new shape.
+    p += normalize(p + vec3(0.0001)) * uBurst * (0.6 + aRand * 1.8) * 2.8;
     vec4 mv = modelViewMatrix * vec4(p, 1.0);
     gl_Position = projectionMatrix * mv;
     float s = uSize * (0.55 + aRand * 0.9);
@@ -206,6 +256,7 @@ export function createWorld(canvas, { reduced = false } = {}) {
       uProgress: { value: 0 },
       uSize: { value: small ? 3.4 : 3.0 },
       uPixel: { value: pixel },
+      uBurst: { value: 0 },
       uOpacity: { value: 0.9 },
       uA: { value: color('--c-violet', '#8b5cf6') },
       uB: { value: color('--c-cyan', '#22d3ee') },
@@ -269,6 +320,8 @@ export function createWorld(canvas, { reduced = false } = {}) {
     const t = clock.elapsedTime;
     material.uniforms.uTime.value = t;
 
+    const b = material.uniforms.uBurst;
+    if (b.value > 0.001) b.value *= Math.pow(0.9, Math.min(raw, 0.1) * 60); else b.value = 0;
     const u = material.uniforms.uProgress;
     if (u.value < 1) u.value = Math.min(1, u.value + Math.min(raw, 0.25) / MORPH_SECONDS);
 
@@ -303,6 +356,7 @@ export function createWorld(canvas, { reduced = false } = {}) {
   });
 
   return {
+    burst() { if (!reduced) material.uniforms.uBurst.value = 1; },
     morph(name, opts = {}) {
       if (shapes[name] && shapes[name] !== target) retarget(shapes[name]);
       if ('x' in opts) goal.x = opts.x;

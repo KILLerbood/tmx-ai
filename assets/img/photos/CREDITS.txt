@@ -1,0 +1,46 @@
+Photo credits - TMX AI demo images
+All photos from Unsplash (https://unsplash.com), used under the Unsplash License (https://unsplash.com/license): free for commercial use, no attribution required - credited here anyway.
+Files were downloaded resized/compressed via the Unsplash image CDN on 2026-10-23.
+
+File                 | Photographer           | License        | Source page
+coffee-bag.jpg       | Vitalii Abakumov       | Unsplash License | https://unsplash.com/photos/brown-paper-pouch-on-white-luNZR9Mcys4
+coffee-beans.jpg     | Fatih Mehmet YILDIZ    | Unsplash License | https://unsplash.com/photos/roasted-brown-coffee-beans-4KqHNQ3sJ6g
+coffee-latte.jpg     | Lex Sirikiat           | Unsplash License | https://unsplash.com/photos/flat-lay-photography-of-coffee-art-7WxWwqjRZcY
+coffee-espresso.jpg  | Adi Goldstein          | Unsplash License | https://unsplash.com/photos/clear-glass-cup-on-saucer-xKS-1DP4g7A
+coffee-pour.jpg      | Kevin Canlas           | Unsplash License | https://unsplash.com/photos/white-and-brown-liquid-in-stainless-steel-cup-WbdkFHDFbTg
+coffee-shop.jpg      | Akash Rajak            | Unsplash License | https://unsplash.com/photos/a-restaurant-with-tables-chairs-and-menus-on-the-wall-jEgyQ1T3D4I
+candle.jpg           | Hans Vivek             | Unsplash License | https://unsplash.com/photos/lighted-candle-66qsl7ia2cE
+candle-2.jpg         | Joyce G                | Unsplash License | https://unsplash.com/photos/lighted-candle-in-the-dark-3y9ymqvRR_s
+candle-3.jpg         | Katriona McCarthy      | Unsplash License | https://unsplash.com/photos/a-candle-with-a-flame-llmooo9BnP0
+candle-story.jpg     | Hanna Balan            | Unsplash License | https://unsplash.com/photos/white-candle-in-clear-glass-holder-1cMQFzjaXi0
+shoe-hero.jpg        | Mojtaba Fahiminia      | Unsplash License | https://unsplash.com/photos/a-pair-of-shoes-sitting-on-top-of-a-pile-of-rocks-T9IqDhJVhEU
+shoe-1.jpg           | Yucel M                | Unsplash License | https://unsplash.com/photos/NIqT6AAffb0
+shoe-2.jpg           | Rohit Sharma           | Unsplash License | https://unsplash.com/photos/a-pair-of-black-and-white-sneakers-hanging-from-a-hook-VeW_kL0isfs
+shoe-3.jpg           | Zac Wolff              | Unsplash License | https://unsplash.com/photos/brown-leather-lace-up-boots-esxf7PJmExQ
+shoe-4.jpg           | Lal MAHAMMAD           | Unsplash License | https://unsplash.com/photos/a-gray-and-red-sneaker-with-a-white-sole-TO0qN__Zuuk
+fashion-hero.jpg     | David Banjo            | Unsplash License | https://unsplash.com/photos/a-woman-with-blonde-hair-in-a-black-satin-outfit-yePFqWHER8I
+fashion-1.jpg        | Mediamodifier          | Unsplash License | https://unsplash.com/photos/white-hoodie-and-distressed-jeans-kJXGTOY1wLQ
+fashion-2.jpg        | Tobias Tullius         | Unsplash License | https://unsplash.com/photos/brown-bomber-jacket-on-hanger-Fg15LdqpWrs
+fashion-3.jpg        | Haryo Setyadi          | Unsplash License | https://unsplash.com/photos/white-crew-neck-t-shirt-acn5ERAeSb4
+fashion-4.jpg        | Shelter                | Unsplash License | https://unsplash.com/photos/white-knit-sweater-on-white-wooden-surface-xEraWP_ZRGU
+home-hero.jpg        | Minh Pham              | Unsplash License | https://unsplash.com/photos/a-living-room-filled-with-furniture-and-a-large-window-OtXADkUh3-I
+home-vase.jpg        | Chloe Bolton           | Unsplash License | https://unsplash.com/photos/ceramic-vases-on-wooden-surface-R0qthXq3jec
+home-lamp.jpg        | Joel Henry             | Unsplash License | https://unsplash.com/photos/brown-and-white-table-lamp-with-light-pdIwPL3HU2s
+home-pillow.jpg      | Mediamodifier          | Unsplash License | https://unsplash.com/photos/white-throw-pillow-on-gray-sofa-zTY9OwAfOrg
+home-mug.jpg         | Mediamodifier          | Unsplash License | https://unsplash.com/photos/white-ceramic-mug-on-white-table-he_xuL-CyyI
+home-plant.jpg       | Stephanie Harvey       | Unsplash License | https://unsplash.com/photos/aloe-vera-in-white-pot-T0inbt7nRME
+home-blanket.jpg     | Costa Live             | Unsplash License | https://unsplash.com/photos/a-cozy-armchair-with-a-white-blanket-draped-over-it-G3ljETYuoo8
+food-hero.jpg        | liuyun wu              | Unsplash License | https://unsplash.com/photos/a-white-plate-topped-with-food-next-to-a-glass-of-wine-dhxtgSdwgyo
+food-pasta.jpg       | Ben Lei                | Unsplash License | https://unsplash.com/photos/penne-pasta-with-meat-sauce-flFd8L7_B3g
+food-pizza.jpg       | Ivan Torres            | Unsplash License | https://unsplash.com/photos/cheese-pizza-with-tomatoes-and-rosemary-MQUqbmszGGM
+food-dessert.jpg     | Mantra Media           | Unsplash License | https://unsplash.com/photos/desert-with-red-berries-on-plate-W7b8Sqb7PG8
+skin-hero.jpg        | pmv chamara            | Unsplash License | https://unsplash.com/photos/three-bottles-of-cosmetic-products-on-a-black-background-x5mMsZ62SpE
+skin-serum.jpg       | Denise Chan            | Unsplash License | https://unsplash.com/photos/a-bottle-of-essential-oil-sitting-on-a-cloth-JpnqiMBf7zQ
+skin-cream.jpg       | Eveling Salazar        | Unsplash License | https://unsplash.com/photos/white-cream-in-an-open-jar-on-a-rock-bM-aV4Jt5qM
+skin-oil.jpg         | Maria Lupan            | Unsplash License | https://unsplash.com/photos/skincare-serum-bottle-and-dropper-on-a-pink-surface-BlcA2-o-7IM
+office.jpg           | Tim van der Kuip       | Unsplash License | https://unsplash.com/photos/man-sitting-on-chair-wearing-gray-crew-neck-long-sleeved-shirt-using-apple-magic-keyboard-CPs2X8JYmS8
+city.jpg             | Calvin Ma              | Unsplash License | https://unsplash.com/photos/a-view-of-a-city-skyline-at-dusk-Vq1lxH5TeQ0
+avatar-1.jpg         | Alex Suprun            | Unsplash License | https://unsplash.com/photos/man-in-black-button-up-shirt-ZHvM3XIOHoE
+avatar-2.jpg         | Jake Nackos            | Unsplash License | https://unsplash.com/photos/woman-in-white-crew-neck-shirt-smiling-IF9TK5Uy-KI
+avatar-3.jpg         | Joseph Gonzalez        | Unsplash License | https://unsplash.com/photos/man-wearing-white-v-neck-shirt-iFgRcqHznqg
+avatar-4.jpg         | Zoran Borojevic        | Unsplash License | https://unsplash.com/photos/woman-in-black-leather-jacket-4BG2yKyCaWg
